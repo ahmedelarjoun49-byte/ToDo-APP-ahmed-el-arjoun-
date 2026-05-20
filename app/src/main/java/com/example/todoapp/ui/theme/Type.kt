@@ -5,63 +5,58 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Color
 
-// Configuration de la typographie Material 3 pour l'écosystème Smart IA
+val NeonBlue = Color(0xFF3B82F6)
+
 val Typography = Typography(
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Black, // Un poil plus épais (Black) pour un rendu moderne sur les titres d'écrans
+        fontWeight = FontWeight.Black,
         fontSize = 32.sp,
-        lineHeight = 40.sp,
-        letterSpacing = 0.sp,
-        color = TextPrimary
+        lineHeight = 40.sp
     ),
+
     headlineMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        lineHeight = 32.sp,
-        letterSpacing = 0.sp,
-        color = TextPrimary
+        lineHeight = 32.sp
     ),
+
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp,
-        color = TextPrimary // Utilisé automatiquement par la LargeTopAppBar de ton écran de tâches
+        lineHeight = 28.sp
     ),
+
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-        color = TextPrimary // Modifié en TextPrimary pour que l'intitulé des tâches soit parfaitement lisible
+        lineHeight = 24.sp
     ),
+
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp,
-        color = TextSecondary // Idéal pour les descriptions secondaires sous les titres
+        lineHeight = 20.sp
     ),
+
     labelMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
-        color = TextSecondary
+        lineHeight = 16.sp
     ),
+
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
         fontSize = 11.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
-        color = SmoothNeonBlue // Utilisé pour faire ressortir le texte "AI Score" dans un format compact
+        color = NeonBlue
     )
 )

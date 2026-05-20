@@ -12,33 +12,31 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// Configuration du thème sombre (L'identité visuelle forte de ton projet IA)
 private val DarkColorScheme = darkColorScheme(
-    primary = KingRoyaleBlue,       // Bleu Cobalt Royal pour les boutons et éléments maîtres
-    secondary = SmoothNeonBlue,     // Bleu Néon pour les accents technologiques et puces IA
-    tertiary = ElectricBlue,        // Reflets cyan électriques secondaires
-    background = DeepSpace,         // Fond d'espace profond ultra-sombre
-    surface = SurfaceDark,          // Surfaces des cartes de tâches (NeonCard)
-    onPrimary = TextPrimary,        // Texte clair sur le bleu royal
-    onSecondary = DeepSpace,        // Texte sombre sur les puces claires pour le contraste
-    onTertiary = DeepSpace,
-    onBackground = TextPrimary,     // Texte principal sur le fond de l'application
-    onSurface = TextPrimary,        // Texte sur les cartes
-    outline = BorderGray            // Bordures fines ciselées
+    primary = Color(0xFF3B82F6),
+    secondary = Color(0xFF06B6D4),
+    tertiary = Color(0xFF22D3EE),
+    background = Color(0xFF0B0F1A),
+    surface = Color(0xFF121826),
+    onPrimary = Color.White,
+    onSecondary = Color.Black,
+    onTertiary = Color.Black,
+    onBackground = Color.White,
+    onSurface = Color.White,
+    outline = Color(0xFF374151)
 )
 
-// Configuration du thème clair (Sécurité / Accessibilité demandée par le système Android)
 private val LightColorScheme = lightColorScheme(
-    primary = KingRoyaleBlue,
-    secondary = SmoothNeonBlue,
-    tertiary = ElectricBlue,
-    background = Color(0xFFF8FAFC),   // Fond blanc bleuté très propre
+    primary = Color(0xFF3B82F6),
+    secondary = Color(0xFF06B6D4),
+    tertiary = Color(0xFF22D3EE),
+    background = Color(0xFFF8FAFC),
     surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = DeepSpace,
-    onTertiary = DeepSpace,
-    onBackground = DeepSpace,
-    onSurface = DeepSpace,
+    onSecondary = Color.Black,
+    onTertiary = Color.Black,
+    onBackground = Color.Black,
+    onSurface = Color.Black,
     outline = Color(0xFFE2E8F0)
 )
 
@@ -47,24 +45,21 @@ fun TodoAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    // Choix dynamique du jeu de couleurs selon les préférences du smartphone
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val view = LocalView.current
 
-    // Synchronisation de la barre de statut Android avec notre charte graphique
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // La barre de notification du téléphone prend exactement la couleur de notre fond d'appli
             window.statusBarColor = colorScheme.background.toArgb()
-            // Ajuste l'icône de la batterie et de l'heure en blanc (si thème sombre) ou noir (si thème clair)
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Utilise ton fichier Typography.kt existant
+        typography = Typography,
         content = content
     )
 }

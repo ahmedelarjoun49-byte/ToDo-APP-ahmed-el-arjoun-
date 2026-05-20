@@ -16,51 +16,59 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.todoapp.ui.theme.*
 
-// Définition locale d'un bleu électrique si jamais il n'est pas dans ton fichier Theme
-val SmoothNeonBlue = Color(0xFF0072FF)
-val DeepBlueGlow = Color(0xFF00C6FF)
+/* ---------------- COLORS ---------------- */
+
+val NeonBlue = Color(0xFF3B82F6)
+val NeonCyan = Color(0xFF22D3EE)
+val NeonGlow = Color(0xFF60A5FA)
+
+/* ---------------- DESIGN TOKENS ---------------- */
+
+private val CornerSmall = 12.dp
+private val CornerMedium = 16.dp
+private val CornerLarge = 22.dp
+
+/* ---------------- NEON BUTTON ---------------- */
 
 @Composable
 fun NeonButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = SmoothNeonBlue // Modification : Remplacé NeonPurple par un Bleu Néon
+    color: Color = NeonBlue
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "neon_glow")
-    val glowIntensity by infiniteTransition.animateFloat(
+    val transition = rememberInfiniteTransition(label = "button_glow")
+
+    val glow by transition.animateFloat(
         initialValue = 0.4f,
-        targetValue = 0.8f,
+        targetValue = 0.9f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+            tween(1800, easing = FastOutSlowInEasing),
+            RepeatMode.Reverse
         ),
-        label = "glow_intensity"
+        label = "glow"
     )
 
     Surface(
         onClick = onClick,
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .shadow(
-                elevation = (8 * glowIntensity).dp,
-                shape = RoundedCornerShape(12.dp),
-                spotColor = containerColor,
-                ambientColor = containerColor
-            ),
-        color = containerColor,
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(CornerMedium),
+        color = color,
+        modifier = modifier.shadow(
+            (10 * glow).dp,
+            RoundedCornerShape(CornerMedium),
+            spotColor = color,
+            ambientColor = color
+        )
     ) {
         Box(
             modifier = Modifier
                 .background(
                     Brush.horizontalGradient(
-                        colors = listOf(containerColor, DeepBlueGlow.copy(alpha = 0.8f)) // Dégradé de bleu
+                        listOf(color, NeonCyan.copy(alpha = 0.8f))
                     )
                 )
-                .padding(horizontal = 24.dp, vertical = 12.dp),
+                .padding(vertical = 14.dp, horizontal = 24.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -73,6 +81,8 @@ fun NeonButton(
     }
 }
 
+/* ---------------- NEON CARD ---------------- */
+
 @Composable
 fun NeonCard(
     modifier: Modifier = Modifier,
@@ -80,20 +90,27 @@ fun NeonCard(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(SurfaceDark)
+            .clip(RoundedCornerShape(CornerLarge))
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
             .border(
-                width = 1.dp,
-                brush = Brush.linearGradient(
-                    colors = listOf(BorderGray, SmoothNeonBlue.copy(alpha = 0.3f)) // Bordure subtile bleue
+                BorderStroke(
+                    1.dp,
+                    Brush.linearGradient(
+                        listOf(
+                            NeonBlue.copy(alpha = 0.4f),
+                            NeonCyan.copy(alpha = 0.2f)
+                        )
+                    )
                 ),
-                shape = RoundedCornerShape(16.dp)
+                RoundedCornerShape(CornerLarge)
             )
             .padding(16.dp)
     ) {
         Column(content = content)
     }
 }
+
+/* ---------------- GLASS INPUT ---------------- */
 
 @Composable
 fun GlassInput(
@@ -105,24 +122,29 @@ fun GlassInput(
     TextField(
         value = value,
         onValueChange = onValueChange,
-        placeholder = { Text(placeholder, color = TextSecondary) },
+        placeholder = {
+            Text(
+                placeholder,
+                color = Color.Gray.copy(alpha = 0.7f)
+            )
+        },
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(SurfaceDark.copy(alpha = 0.5f)),
+            .clip(RoundedCornerShape(CornerMedium)),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            cursorColor = SmoothNeonBlue,           // Curseur bleu
-            focusedIndicatorColor = SmoothNeonBlue, // Ligne de focus bleue
-            unfocusedIndicatorColor = BorderGray,
-            focusedTextColor = TextPrimary,
-            unfocusedTextColor = TextPrimary
-        ),
-        shape = RoundedCornerShape(12.dp)
+            focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+            disabledContainerColor = MaterialTheme.colorScheme.surface,
+            cursorColor = NeonBlue,
+            focusedIndicatorColor = NeonBlue,
+            unfocusedIndicatorColor = Color.Gray.copy(alpha = 0.4f),
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+        )
     )
 }
+
+/* ---------------- CATEGORY CHIP ---------------- */
 
 @Composable
 fun CategoryChip(
@@ -133,48 +155,54 @@ fun CategoryChip(
 ) {
     Surface(
         onClick = onClick,
+        shape = RoundedCornerShape(50),
+        color = if (isSelected) NeonBlue else MaterialTheme.colorScheme.surface,
+        border = if (isSelected) null else BorderStroke(1.dp, Color.Gray.copy(alpha = 0.4f)),
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp)),
-        color = if (isSelected) SmoothNeonBlue else SurfaceDark, // Fond bleu si sélectionné
-        shape = RoundedCornerShape(20.dp),
-        border = if (isSelected) null else BorderStroke(1.dp, BorderGray)
     ) {
         Text(
             text = category,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            color = if (isSelected) Color.White else TextSecondary,
+            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
         )
     }
 }
 
+/* ---------------- GLOW EFFECT ---------------- */
+
 @Composable
 fun Modifier.pulsingGlow(
-    color: Color = SmoothNeonBlue, // Valeur par défaut mise sur le bleu néon
+    color: Color = NeonBlue,
     enabled: Boolean = true
 ): Modifier {
     if (!enabled) return this
 
-    val infiniteTransition = rememberInfiniteTransition(label = "pulsing_glow")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.6f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
+    val transition = rememberInfiniteTransition(label = "glow")
+
+    val alpha by transition.animateFloat(
+        0.2f,
+        0.7f,
+        infiniteRepeatable(
+            tween(1400, easing = FastOutSlowInEasing),
+            RepeatMode.Reverse
         ),
         label = "alpha"
     )
 
-    return this.shadow(
-        elevation = (12 * alpha).dp,
-        shape = RoundedCornerShape(16.dp),
-        spotColor = color,
-        ambientColor = color
-    ).border(
-        width = 1.dp,
-        color = color.copy(alpha = alpha),
-        shape = RoundedCornerShape(16.dp)
-    )
+    val shape = RoundedCornerShape(CornerLarge)
+
+    return this
+        .shadow(
+            (14 * alpha).dp,
+            shape,
+            spotColor = color,
+            ambientColor = color
+        )
+        .border(
+            1.dp,
+            color.copy(alpha = alpha),
+            shape
+        )
 }

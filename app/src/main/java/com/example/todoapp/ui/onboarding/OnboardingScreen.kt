@@ -1,10 +1,10 @@
 package com.example.todoapp.ui.onboarding
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,11 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.todoapp.ui.components.NeonButton
-import com.example.todoapp.ui.components.SmoothNeonBlue
-import com.example.todoapp.ui.components.DeepBlueGlow
-import com.example.todoapp.ui.theme.*
 import kotlinx.coroutines.launch
 
 data class OnboardingPage(
@@ -26,22 +22,21 @@ data class OnboardingPage(
     val color: Color
 )
 
-// Modification : Textes orientés "IA / Emploi du temps" et palettes de bleus uniformisées
 val pages = listOf(
     OnboardingPage(
         "Priorisation par IA",
-        "Notre algorithme intelligent trie automatiquement vos tâches en fonction de leur urgence réelle et de leur importance.",
-        SmoothNeonBlue
+        "Notre algorithme intelligent trie automatiquement vos tâches selon leur priorité réelle.",
+        Color(0xFF3B82F6)
     ),
     OnboardingPage(
         "Maîtrisez votre Temps",
-        "Une intégration fluide avec votre emploi du temps quotidien pour ne jamais rater une date limite cruciale.",
-        DeepBlueGlow
+        "Suivez facilement vos deadlines et votre planning quotidien.",
+        Color(0xFF2563EB)
     ),
     OnboardingPage(
         "Analyse d'Habitudes",
-        "L'application apprend de votre routine quotidienne pour vous proposer la bonne tâche au moment idéal.",
-        ElectricBlue
+        "L'application s'adapte à votre routine pour améliorer votre productivité.",
+        Color(0xFF1D4ED8)
     )
 )
 
@@ -52,16 +47,21 @@ fun OnboardingScreen(
     val pagerState = rememberPagerState(pageCount = { pages.size })
     val scope = rememberCoroutineScope()
 
+    val colors = MaterialTheme.colorScheme
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DeepSpace)
+            .background(colors.background)
     ) {
+
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { index ->
+
             val page = pages[index]
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -69,19 +69,21 @@ fun OnboardingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                // Un petit indicateur visuel de la couleur de la page (Optionnel/Subtile)
+
+                // ICON DOT
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
-                        .background(page.color.copy(alpha = 0.1f), androidx.compose.foundation.shape.CircleShape)
-                        .padding(20.dp),
+                        .size(90.dp)
+                        .background(
+                            page.color.copy(alpha = 0.15f),
+                            CircleShape
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Icône ou point lumineux bleu
                     Box(
                         modifier = Modifier
-                            .size(20.dp)
-                            .background(page.color, androidx.compose.foundation.shape.CircleShape)
+                            .size(18.dp)
+                            .background(page.color, CircleShape)
                     )
                 }
 
@@ -92,44 +94,50 @@ fun OnboardingScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = TextPrimary
+                    color = colors.onBackground
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = page.description,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    color = TextSecondary
+                    color = colors.onBackground.copy(alpha = 0.7f)
                 )
             }
         }
 
-        // Footer (Utilise maintenant notre NeonButton bleu par défaut)
+        // FOOTER
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(40.dp)
+                .padding(32.dp)
         ) {
-            if (pagerState.currentPage == pages.size - 1) {
+
+            if (pagerState.currentPage == pages.lastIndex) {
+
                 NeonButton(
                     text = "Get Started",
                     onClick = onFinish,
-                    containerColor = SmoothNeonBlue,
                     modifier = Modifier.fillMaxWidth()
                 )
+
             } else {
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     TextButton(onClick = onFinish) {
-                        Text("Skip", color = TextSecondary)
+                        Text("Skip")
                     }
+
                     NeonButton(
                         text = "Next",
-                        containerColor = SmoothNeonBlue,
                         onClick = {
                             scope.launch {
                                 pagerState.animateScrollToPage(pagerState.currentPage + 1)

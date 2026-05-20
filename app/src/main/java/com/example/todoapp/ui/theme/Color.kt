@@ -2,28 +2,14 @@ package com.example.todoapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// --- PALETTE PREMIUM : BLUE KING ROYALE ---
+val DeepSpace = Color(0xFF0B0F1A)
 
-// Le fond sombre de l'application (Espace Profond aux reflets bleu nuit très légers)
-val DeepSpace = Color(0xFF0A0F1D)
+val NeonCyan = Color(0xFF00FFFF)
+val NeonPurple = Color(0xFF9D00FF)
+val ElectricBlue = Color(0xFF2979FF)
+val HotPink = Color(0xFFFF2E88)
 
-// La couleur des cartes et des surfaces surélevées
-val SurfaceDark = Color(0xFF131A2E)
+val TextPrimary = Color(0xFFFFFFFF)
+val TextSecondary = Color(0xFFB0B3C1)
 
-// Le Bleu Royal Principal (Le "King Royale" - Cobalt profond et noble)
-val KingRoyaleBlue = Color(0xFF1A56DB)
-
-// Le Bleu Néon Électrique (Pour les touches d'IA, les bordures lumineuses et les puces d'activation)
-val SmoothNeonBlue = Color(0xFF00C2FF)
-val ElectricBlue = Color(0xFF00E5FF)
-val DeepBlueGlow = Color(0xFF2563EB)
-
-// Alertes et Retards Critiques (On garde un rouge/corail électrique ultra-visible pour l'urgence)
-val NeonRed = Color(0xFFFF3B30)
-
-// Bordures fines des composants pour un effet technologique ciselé
-val BorderGray = Color(0xFF1E293B)
-
-// Typographies et Textes (Contrastes optimisés sur fond sombre)
-val TextPrimary = Color(0xFFF8FAFC)     // Blanc pur saphir
-val TextSecondary = Color(0xFF94A3B8)   // Gris bleu adouci
+val BorderGray = Color(0xFF2A2E3D)

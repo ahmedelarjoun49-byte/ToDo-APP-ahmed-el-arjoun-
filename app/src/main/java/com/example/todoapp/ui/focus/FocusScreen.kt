@@ -1,6 +1,5 @@
 package com.example.todoapp.ui.focus
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,37 +9,42 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.todoapp.data.model.Task
-import com.example.todoapp.ui.theme.*
-import com.example.todoapp.ui.components.NeonButton // Importation de ton nouveau bouton bleu
-import com.example.todoapp.ui.components.SmoothNeonBlue
-import com.example.todoapp.ui.components.DeepBlueGlow
-import kotlinx.coroutines.delay
 import com.example.todoapp.util.HapticHelper
+import kotlinx.coroutines.delay
 
 @Composable
 fun FocusScreen(
     task: Task,
     onClose: () -> Unit
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     val haptic = remember { HapticHelper(context) }
-    var timeLeft by remember { mutableStateOf(25 * 60) } // 25 minutes default
+
+    // ✅ SAFE: extract colorScheme ONCE inside composable
+    val colors = MaterialTheme.colorScheme
+
+    var timeLeft by remember { mutableStateOf(25 * 60) }
     var isRunning by remember { mutableStateOf(false) }
+
+    val totalTime = 25 * 60f
+    val progress = (timeLeft / totalTime).coerceIn(0f, 1f)
 
     LaunchedEffect(isRunning) {
         if (isRunning) {
             haptic.success()
-            while (timeLeft > 0) {
+
+            while (isRunning && timeLeft > 0) {
                 delay(1000)
                 timeLeft--
             }
+
             isRunning = false
         } else {
             haptic.click()
@@ -50,84 +54,92 @@ fun FocusScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DeepSpace),
+            .background(colors.background),
         contentAlignment = Alignment.Center
     ) {
+
         IconButton(
             onClick = onClose,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(32.dp)
+                .padding(24.dp)
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = TextPrimary)
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Close",
+                tint = colors.onBackground
+            )
         }
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier.padding(24.dp)
         ) {
+
             Text(
-                text = "FOCUSING ON",
+                text = "FOCUS MODE",
                 style = MaterialTheme.typography.labelMedium,
-                color = TextSecondary,
-                letterSpacing = 4.sp
+                color = colors.onBackground.copy(alpha = 0.7f)
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = task.title,
-                style = MaterialTheme.typography.headlineLarge,
-                color = TextPrimary,
+                style = MaterialTheme.typography.headlineMedium,
+                color = colors.onBackground,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             Box(contentAlignment = Alignment.Center) {
-                // Background Circle (Le cercle de fond sombre de la jauge)
-                Canvas(modifier = Modifier.size(280.dp)) {
+
+                // BACKGROUND CIRCLE
+                Canvas(modifier = Modifier.size(260.dp)) {
                     drawCircle(
-                        color = SurfaceDark,
+                        color = colors.surfaceVariant,
                         radius = size.minDimension / 2,
                         style = Stroke(width = 12.dp.toPx())
                     )
                 }
 
-                // Progress Arc (Modification : Changé en Bleu Néon avec effet dynamique)
-                val progress = timeLeft / (25 * 60f)
-                Canvas(modifier = Modifier.size(280.dp)) {
+                // PROGRESS ARC
+                Canvas(modifier = Modifier.size(260.dp)) {
                     drawArc(
-                        color = SmoothNeonBlue,
+                        color = colors.primary,
                         startAngle = -90f,
                         sweepAngle = 360 * progress,
                         useCenter = false,
-                        style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round)
+                        style = Stroke(
+                            width = 12.dp.toPx(),
+                            cap = StrokeCap.Round
+                        )
                     )
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val minutes = timeLeft / 60
-                    val seconds = timeLeft % 60
-                    Text(
-                        text = "%02d:%02d".format(minutes, seconds),
-                        style = MaterialTheme.typography.displayLarge,
-                        color = Color.White,
-                        fontWeight = FontWeight.Light,
-                        fontSize = 72.sp
-                    )
-                }
+                val minutes = timeLeft / 60
+                val seconds = timeLeft % 60
+
+                Text(
+                    text = "%02d:%02d".format(minutes, seconds),
+                    style = MaterialTheme.typography.displayLarge,
+                    fontSize = 64.sp,
+                    fontWeight = FontWeight.Light,
+                    color = colors.onBackground
+                )
             }
 
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
-            // Modification : Remplacement du bouton classique par notre NeonButton personnalisé bleu électrique
-            NeonButton(
-                text = if (isRunning) "PAUSE" else "START FOCUS",
+            Button(
                 onClick = { isRunning = !isRunning },
-                containerColor = if (isRunning) SurfaceDark else SmoothNeonBlue,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-            )
+                    .height(52.dp)
+            ) {
+                Text(if (isRunning) "PAUSE" else "START FOCUS")
+            }
         }
     }
 }
